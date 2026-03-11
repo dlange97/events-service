@@ -1,0 +1,44 @@
+security:
+  providers:
+    jwt:
+      lexik_jwt:
+        class: App\Security\JwtUser
+
+  firewalls:
+    dev:
+      pattern: ^/(_(profiler|wdt)|css|images|js)/
+      security: false
+
+    health:
+      pattern: ^/api/health$
+      security: false
+
+    api:
+      pattern: ^/api/
+      stateless: true
+      provider: jwt
+      jwt: ~
+
+  access_control:
+    - { path: ^/api/health, roles: PUBLIC_ACCESS }
+    - {
+        path: ^/api/events,
+        methods: [GET],
+        allow_if: "user and 'events.view' in user.getPermissions()",
+      }
+    - {
+        path: ^/api/events,
+        methods: [POST, PATCH, PUT, DELETE],
+        allow_if: "user and 'events.manage' in user.getPermissions()",
+      }
+    - {
+        path: ^/api/routes,
+        methods: [GET],
+        allow_if: "user and 'map.view' in user.getPermissions()",
+      }
+    - {
+        path: ^/api/routes,
+        methods: [POST, PATCH, PUT, DELETE],
+        allow_if: "user and 'routes.manage' in user.getPermissions()",
+      }
+    - { path: ^/api/, roles: ROLE_USER }
