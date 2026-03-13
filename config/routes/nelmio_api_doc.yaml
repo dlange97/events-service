@@ -1,0 +1,9 @@
+events_api_doc_json:
+  path: /events/docs.json
+  methods: [GET]
+  defaults: { _controller: nelmio_api_doc.controller.swagger, area: default }
+
+events_api_doc_ui:
+  path: /events/docs
+  methods: [GET]
+  defaults: { _controller: nelmio_api_doc.controller.swagger_ui, area: default }

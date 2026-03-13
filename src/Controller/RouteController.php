@@ -13,14 +13,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/api/routes', name: 'api_routes_')]
+#[Route('/events/routes', name: 'events_routes_')]
 class RouteController extends AbstractController
 {
     public function __construct(private readonly RouteService $routeService) {}
 
-    /**
-     * GET /api/routes – Get all routes for current user
-     */
     #[Route('', name: 'index', methods: ['GET'])]
     public function index(): JsonResponse
     {
@@ -28,9 +25,6 @@ class RouteController extends AbstractController
         return $this->json($routes);
     }
 
-    /**
-     * GET /api/routes/event/{eventId} – Get routes for specific event
-     */
     #[Route('/event/{eventId}', name: 'by_event', methods: ['GET'])]
     public function byEvent(int $eventId): JsonResponse
     {
@@ -38,10 +32,6 @@ class RouteController extends AbstractController
         return $this->json($routes);
     }
 
-    /**
-     * POST /api/routes – Create new route
-     * Body: { "name": "...", "description": "...", "geoJson": {...}, "distanceMeters": 1234.56, "durationMinutes": 30, "waypoints": [[lat, lon], ...], "eventId": 1 }
-     */
     #[Route('', name: 'create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
@@ -55,9 +45,6 @@ class RouteController extends AbstractController
         }
     }
 
-    /**
-     * PUT /api/routes/{id} – Update route
-     */
     #[Route('/{id}', name: 'update', methods: ['PUT'])]
     public function update(Request $request, RouteEntity $entity): JsonResponse
     {
@@ -72,9 +59,6 @@ class RouteController extends AbstractController
         }
     }
 
-    /**
-     * DELETE /api/routes/{id} – Delete route
-     */
     #[Route('/{id}', name: 'delete', methods: ['DELETE'])]
     public function delete(RouteEntity $entity): JsonResponse
     {

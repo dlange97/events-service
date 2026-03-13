@@ -1,0 +1,217 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Events Service API",
+        "description": "Events, routes, and event-related health endpoints.",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/events": {
+            "get": {
+                "operationId": "get_events_index",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "post_events_create",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/events/upcoming": {
+            "get": {
+                "operationId": "get_events_upcoming",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/events/{id}": {
+            "get": {
+                "operationId": "get_events_show",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            },
+            "put": {
+                "operationId": "put_events_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "delete_events_delete",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "patch_events_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/events/health": {
+            "get": {
+                "operationId": "get_events_health",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/events/routes": {
+            "get": {
+                "summary": "GET /events/routes \u2013 Get all routes for current user",
+                "operationId": "get_events_routes_index",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "summary": "POST /events/routes \u2013 Create new route\nBody: { \"name\": \"...\", \"description\": \"...\", \"geoJson\": {...}, \"distanceMeters\": 1234.56, \"durationMinutes\": 30, \"waypoints\": [[lat, lon], ...], \"eventId\": 1 }",
+                "operationId": "post_events_routes_create",
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/events/routes/event/{eventId}": {
+            "get": {
+                "summary": "GET /events/routes/event/{eventId} \u2013 Get routes for specific event",
+                "operationId": "get_events_routes_by_event",
+                "parameters": [
+                    {
+                        "name": "eventId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/events/routes/{id}": {
+            "put": {
+                "summary": "PUT /events/routes/{id} \u2013 Update route",
+                "operationId": "put_events_routes_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "summary": "DELETE /events/routes/{id} \u2013 Delete route",
+                "operationId": "delete_events_routes_delete",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "security": [
+        {
+            "bearerAuth": []
+        }
+    ]
+}

@@ -1,0 +1,19 @@
+nelmio_api_doc:
+  documentation:
+    info:
+      title: Events Service API
+      description: Events, routes, and event-related health endpoints.
+      version: 1.0.0
+    components:
+      securitySchemes:
+        bearerAuth:
+          type: http
+          scheme: bearer
+          bearerFormat: JWT
+    security:
+      - bearerAuth: []
+  areas:
+    default:
+      path_patterns:
+        - ^/events
+        - ^/events/health$
