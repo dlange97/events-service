@@ -16,7 +16,9 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/events', name: 'events_')]
 class EventController extends AbstractController
 {
-    public function __construct(private readonly EventService $eventService) {}
+    public function __construct(private readonly EventService $eventService)
+    {
+    }
 
     #[Route('', name: 'index', methods: ['GET'])]
     public function index(): JsonResponse
