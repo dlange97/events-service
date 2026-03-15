@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Event;
-use App\Security\JwtUser;
+use MyDashboard\Shared\Security\JwtUser;
 use App\Service\EventService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,10 +13,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/api/events', name: 'api_events_')]
+#[Route('/events', name: 'events_')]
 class EventController extends AbstractController
 {
-    public function __construct(private readonly EventService $eventService) {}
+    public function __construct(private readonly EventService $eventService)
+    {
+    }
 
     #[Route('', name: 'index', methods: ['GET'])]
     public function index(): JsonResponse
@@ -38,7 +40,7 @@ class EventController extends AbstractController
         return $this->json($payload, Response::HTTP_CREATED);
     }
 
-    #[Route('/{id}', name: 'show', methods: ['GET'])]
+    #[Route('/{id}', name: 'show', requirements: ['id' => '\\d+'], methods: ['GET'])]
     public function show(Event $event): JsonResponse
     {
         $this->assertOwner($event);
@@ -46,7 +48,7 @@ class EventController extends AbstractController
         return $this->json($this->eventService->serialize($event));
     }
 
-    #[Route('/{id}', name: 'update', methods: ['PUT', 'PATCH'])]
+    #[Route('/{id}', name: 'update', requirements: ['id' => '\\d+'], methods: ['PUT', 'PATCH'])]
     public function update(Request $request, Event $event): JsonResponse
     {
         $this->assertOwner($event);
@@ -55,7 +57,7 @@ class EventController extends AbstractController
         return $this->json($payload);
     }
 
-    #[Route('/{id}', name: 'delete', methods: ['DELETE'])]
+    #[Route('/{id}', name: 'delete', requirements: ['id' => '\\d+'], methods: ['DELETE'])]
     public function delete(Event $event): JsonResponse
     {
         $this->assertOwner($event);

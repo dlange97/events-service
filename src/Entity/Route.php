@@ -33,7 +33,11 @@ class Route
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
 
-    /** GeoJSON LineString or MultiLineString representing the route path */
+    /**
+     * GeoJSON LineString or MultiLineString representing the route path.
+     *
+     * @var array<string, mixed>
+     */
     #[ORM\Column(type: 'json')]
     #[Assert\NotNull(message: 'Route path is required.')]
     private array $geoJson = [];
@@ -46,7 +50,15 @@ class Route
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $durationMinutes = null;
 
-    /** JSON array of waypoints: [["lat", "lon"], ...] */
+    /** Hex color used to render route on map */
+    #[ORM\Column(type: 'string', length: 16, options: ['default' => '#6366f1'])]
+    private string $color = '#6366f1';
+
+    /**
+     * JSON array of waypoints: [["lat", "lon"], ...]
+     *
+     * @var array<int, array<int, float|int|string>>
+     */
     #[ORM\Column(type: 'json')]
     private array $waypoints = [];
 
@@ -87,11 +99,17 @@ class Route
         return $this;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getGeoJson(): array
     {
         return $this->geoJson;
     }
 
+    /**
+     * @param array<string, mixed> $geoJson
+     */
     public function setGeoJson(array $geoJson): static
     {
         $this->geoJson = $geoJson;
@@ -120,11 +138,34 @@ class Route
         return $this;
     }
 
+    public function getColor(): string
+    {
+        return $this->color;
+    }
+
+    public function setColor(string $color): static
+    {
+        $normalized = strtoupper(trim($color));
+        if (!preg_match('/^#[0-9A-F]{6}$/', $normalized)) {
+            $normalized = '#6366F1';
+        }
+
+        $this->color = $normalized;
+
+        return $this;
+    }
+
+    /**
+     * @return array<int, array<int, float|int|string>>
+     */
     public function getWaypoints(): array
     {
         return $this->waypoints;
     }
 
+    /**
+     * @param array<int, array<int, float|int|string>> $waypoints
+     */
     public function setWaypoints(array $waypoints): static
     {
         $this->waypoints = $waypoints;

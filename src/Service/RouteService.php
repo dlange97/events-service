@@ -11,9 +11,10 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class RouteService
 {
     public function __construct(
-        private readonly RouteRepository    $routeRepository,
+        private readonly RouteRepository $routeRepository,
         private readonly ValidatorInterface $validator,
-    ) {}
+    ) {
+    }
 
     /**
      * Find all routes for an owner
@@ -113,6 +114,10 @@ class RouteService
             $route->setDurationMinutes((int) $data['durationMinutes']);
         }
 
+        if (isset($data['color'])) {
+            $route->setColor((string) $data['color']);
+        }
+
         if (isset($data['waypoints'])) {
             $route->setWaypoints($data['waypoints']);
         }
@@ -153,6 +158,7 @@ class RouteService
             'geoJson'         => $route->getGeoJson(),
             'distanceMeters'  => $route->getDistanceMeters(),
             'durationMinutes' => $route->getDurationMinutes(),
+            'color'           => $route->getColor(),
             'waypoints'       => $route->getWaypoints(),
             'eventId'         => $route->getEventId(),
             'createdAt'       => $route->getCreatedAt()?->format(\DateTimeInterface::ATOM),

@@ -2,7 +2,7 @@ security:
   providers:
     jwt:
       lexik_jwt:
-        class: App\Security\JwtUser
+        class: MyDashboard\Shared\Security\JwtUser
 
   firewalls:
     dev:
@@ -10,35 +10,36 @@ security:
       security: false
 
     health:
-      pattern: ^/api/health$
+      pattern: ^/events/health$
       security: false
 
     api:
-      pattern: ^/api/
+      pattern: "^/events(?:$|/)"
       stateless: true
       provider: jwt
       jwt: ~
 
   access_control:
-    - { path: ^/api/health, roles: PUBLIC_ACCESS }
+    - { path: "^/events/health", roles: PUBLIC_ACCESS }
+    - { path: "^/events/docs(?:\\.json)?$", roles: PUBLIC_ACCESS }
     - {
-        path: ^/api/events,
-        methods: [GET],
-        allow_if: "user and 'events.view' in user.getPermissions()",
-      }
-    - {
-        path: ^/api/events,
-        methods: [POST, PATCH, PUT, DELETE],
-        allow_if: "user and 'events.manage' in user.getPermissions()",
-      }
-    - {
-        path: ^/api/routes,
+        path: "^/events/routes",
         methods: [GET],
         allow_if: "user and 'map.view' in user.getPermissions()",
       }
     - {
-        path: ^/api/routes,
+        path: "^/events/routes",
         methods: [POST, PATCH, PUT, DELETE],
         allow_if: "user and 'routes.manage' in user.getPermissions()",
       }
-    - { path: ^/api/, roles: ROLE_USER }
+    - {
+        path: "^/events(?:$|/(?!routes))",
+        methods: [GET],
+        allow_if: "user and 'events.view' in user.getPermissions()",
+      }
+    - {
+        path: "^/events(?:$|/(?!routes))",
+        methods: [POST, PATCH, PUT, DELETE],
+        allow_if: "user and 'events.manage' in user.getPermissions()",
+      }
+    - { path: "^/events(?:$|/)", roles: ROLE_USER }

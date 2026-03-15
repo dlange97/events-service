@@ -11,9 +11,10 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class EventService
 {
     public function __construct(
-        private readonly EventRepository    $eventRepository,
+        private readonly EventRepository $eventRepository,
         private readonly ValidatorInterface $validator,
-    ) {}
+    ) {
+    }
 
     /**
      * Return all events for an owner, serialised as plain arrays.

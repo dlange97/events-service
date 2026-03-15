@@ -86,13 +86,10 @@ class EventServiceTest extends TestCase
 
     public function testCreateThrowsOnValidationFailure(): void
     {
-        $violations = $this->createMock(\Symfony\Component\Validator\ConstraintViolationListInterface::class);
-        $violations->method('count')->willReturn(1);
-
         $singleViolation = $this->createMock(\Symfony\Component\Validator\ConstraintViolationInterface::class);
         $singleViolation->method('getMessage')->willReturn('Title is required.');
 
-        $violations->method('getIterator')->willReturn(new \ArrayIterator([$singleViolation]));
+        $violations = new ConstraintViolationList([$singleViolation]);
 
         $this->validator->method('validate')->willReturn($violations);
 
