@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1773573706">
-  <project timestamp="1773573706" name="Clover Coverage">
+<coverage generated="1773576240">
+  <project timestamp="1773576240" name="Clover Coverage">
     <package name="App\Controller">
       <file name="/app/src/Controller/EventController.php">
         <class name="App\Controller\EventController" namespace="App\Controller">
