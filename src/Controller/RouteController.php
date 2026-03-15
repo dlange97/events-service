@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Route as RouteEntity;
-use App\Security\JwtUser;
+use MyDashboard\Shared\Security\JwtUser;
 use App\Service\RouteService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
