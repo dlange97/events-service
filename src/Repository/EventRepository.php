@@ -28,9 +28,18 @@ class EventRepository extends ServiceEntityRepository
      */
     public function findAllByOwner(string $ownerId): array
     {
+        return $this->findAllAccessibleByUser($ownerId);
+        }
+
+        /**
+         * @return Event[]
+         */
+        public function findAllAccessibleByUser(string $userId): array
+        {
         return $this->createQueryBuilder('e')
-            ->andWhere('e.ownerId = :ownerId')
-            ->setParameter('ownerId', $ownerId)
+            ->andWhere('e.ownerId = :userId OR e.sharedWithUserIds LIKE :sharedMatch')
+            ->setParameter('userId', $userId)
+            ->setParameter('sharedMatch', '%"' . $userId . '"%')
             ->orderBy('e.startAt', 'ASC')
             ->getQuery()
             ->getResult();
@@ -44,9 +53,10 @@ class EventRepository extends ServiceEntityRepository
     public function findUpcoming(string $ownerId): array
     {
         return $this->createQueryBuilder('e')
-            ->andWhere('e.ownerId = :ownerId')
+            ->andWhere('e.ownerId = :ownerId OR e.sharedWithUserIds LIKE :sharedMatch')
             ->andWhere('e.startAt >= :now')
             ->setParameter('ownerId', $ownerId)
+            ->setParameter('sharedMatch', '%"' . $ownerId . '"%')
             ->setParameter('now', new \DateTimeImmutable())
             ->orderBy('e.startAt', 'ASC')
             ->setMaxResults(20)
