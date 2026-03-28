@@ -25,7 +25,7 @@ class EventService
     {
         return array_map(
             fn(Event $e) => $this->serialize($e),
-            $this->eventRepository->findAllByOwner($ownerId)
+            $this->eventRepository->findAllAccessibleByUser($ownerId)
         );
     }
 
@@ -88,6 +88,37 @@ class EventService
     }
 
     /**
+     * @return array<string, mixed>
+     */
+    public function shareWithUser(Event $event, string $userId): array
+    {
+        $normalizedUserId = trim($userId);
+        if ($normalizedUserId === '') {
+            throw new \InvalidArgumentException('User ID cannot be empty.');
+        }
+
+        if ($event->getOwnerId() === $normalizedUserId) {
+            throw new \InvalidArgumentException('Owner already has access to this event.');
+        }
+
+        $event->addSharedUserId($normalizedUserId);
+        $this->eventRepository->save($event, true);
+
+        return $this->serialize($event);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function unshareWithUser(Event $event, string $userId): array
+    {
+        $event->removeSharedUserId($userId);
+        $this->eventRepository->save($event, true);
+
+        return $this->serialize($event);
+    }
+
+    /**
      * Serialise an Event entity to an array safe for JSON output.
      *
      * @return array<string, mixed>
@@ -110,6 +141,8 @@ class EventService
             'startAt'     => $event->getStartAt()?->format(\DateTimeInterface::ATOM),
             'endAt'       => $event->getEndAt()?->format(\DateTimeInterface::ATOM),
             'location'    => $location,
+            'ownerId'     => $event->getOwnerId(),
+            'sharedWithUserIds' => $event->getSharedWithUserIds(),
             'createdAt'   => $event->getCreatedAt()?->format(\DateTimeInterface::ATOM),
             'updatedAt'   => $event->getUpdatedAt()?->format(\DateTimeInterface::ATOM),
         ];

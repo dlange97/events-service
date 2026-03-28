@@ -32,7 +32,7 @@ class EventServiceTest extends TestCase
         $event = $this->makeEvent(1, 'Meeting', 'owner-uuid-1');
 
         $this->repo->expects($this->once())
-            ->method('findAllByOwner')
+            ->method('findAllAccessibleByUser')
             ->with('owner-uuid-1')
             ->willReturn([$event]);
 
