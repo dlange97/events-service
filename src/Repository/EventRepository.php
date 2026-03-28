@@ -29,13 +29,13 @@ class EventRepository extends ServiceEntityRepository
     public function findAllByOwner(string $ownerId): array
     {
         return $this->findAllAccessibleByUser($ownerId);
-        }
+    }
 
-        /**
-         * @return Event[]
-         */
-        public function findAllAccessibleByUser(string $userId): array
-        {
+    /**
+     * @return Event[]
+     */
+    public function findAllAccessibleByUser(string $userId): array
+    {
         return $this->createQueryBuilder('e')
             ->andWhere('e.ownerId = :userId OR e.sharedWithUserIds LIKE :sharedMatch')
             ->setParameter('userId', $userId)
