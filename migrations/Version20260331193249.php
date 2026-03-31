@@ -26,7 +26,7 @@ final class Version20260331193249 extends AbstractMigration
             $this->addSql('ALTER TABLE map_point CHANGE description description LONGTEXT DEFAULT NULL, CHANGE created_at created_at DATETIME NOT NULL, CHANGE updated_at updated_at DATETIME NOT NULL');
             $this->addSql('ALTER TABLE map_point RENAME INDEX idx_map_point_owner TO IDX_3753BC487E3C61F9');
         }
-        if ($schema->hasTable('route')) {
+        if ($schema->hasTable('route') && $schema->getTable('route')->hasColumn('color')) {
             $this->addSql('ALTER TABLE route CHANGE color color VARCHAR(16) DEFAULT \'#6366f1\' NOT NULL');
         }
     }
