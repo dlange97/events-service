@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\Route;
 use App\Repository\RouteRepository;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class RouteService
@@ -85,6 +86,13 @@ class RouteService
     public function delete(Route $route): void
     {
         $this->routeRepository->remove($route, true);
+    }
+
+    public function assertOwner(Route $route, string $ownerId): void
+    {
+        if ($route->getOwnerId() !== $ownerId) {
+            throw new AccessDeniedHttpException('You do not own this route.');
+        }
     }
 
     /**

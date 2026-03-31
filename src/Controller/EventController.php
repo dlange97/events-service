@@ -44,7 +44,7 @@ class EventController extends AbstractController
     #[Route('/{id}', name: 'show', requirements: ['id' => '\\d+'], methods: ['GET'])]
     public function show(Event $event): JsonResponse
     {
-        $this->assertAccessible($event);
+        $this->eventService->assertAccessible($event, $this->getOwnerId());
 
         return $this->json($this->eventService->serialize($event));
     }
@@ -52,7 +52,7 @@ class EventController extends AbstractController
     #[Route('/{id}', name: 'update', requirements: ['id' => '\\d+'], methods: ['PUT', 'PATCH'])]
     public function update(Request $request, Event $event): JsonResponse
     {
-        $this->assertAccessible($event);
+        $this->eventService->assertAccessible($event, $this->getOwnerId());
         $data = json_decode($request->getContent(), true) ?? [];
         $payload = $this->eventService->update($event, $data);
         return $this->json($payload);
@@ -61,7 +61,7 @@ class EventController extends AbstractController
     #[Route('/{id}', name: 'delete', requirements: ['id' => '\\d+'], methods: ['DELETE'])]
     public function delete(Event $event): JsonResponse
     {
-        $this->assertOwner($event);
+        $this->eventService->assertOwner($event, $this->getOwnerId());
         $this->eventService->delete($event);
 
         return $this->json(null, Response::HTTP_NO_CONTENT);
@@ -70,7 +70,7 @@ class EventController extends AbstractController
     #[Route('/{id}/share', name: 'share', requirements: ['id' => '\\d+'], methods: ['POST'])]
     public function share(Request $request, Event $event): JsonResponse
     {
-        $this->assertOwner($event);
+        $this->eventService->assertOwner($event, $this->getOwnerId());
         $data = json_decode($request->getContent(), true) ?? [];
         $userId = trim((string) ($data['userId'] ?? ''));
 
@@ -90,7 +90,7 @@ class EventController extends AbstractController
     #[Route('/{id}/share/{userId}', name: 'unshare', requirements: ['id' => '\\d+'], methods: ['DELETE'])]
     public function unshare(Event $event, string $userId): JsonResponse
     {
-        $this->assertOwner($event);
+        $this->eventService->assertOwner($event, $this->getOwnerId());
 
         return $this->json($this->eventService->unshareWithUser($event, $userId));
     }
@@ -102,26 +102,5 @@ class EventController extends AbstractController
         /** @var JwtUser $user */
         $user = $this->getUser();
         return $user->getUserId();
-    }
-
-    private function assertOwner(Event $event): void
-    {
-        if ($event->getOwnerId() !== $this->getOwnerId()) {
-            throw $this->createAccessDeniedException('You do not own this event.');
-        }
-    }
-
-    private function assertAccessible(Event $event): void
-    {
-        $userId = $this->getOwnerId();
-        if ($event->getOwnerId() === $userId) {
-            return;
-        }
-
-        if (in_array($userId, $event->getSharedWithUserIds(), true)) {
-            return;
-        }
-
-        throw $this->createAccessDeniedException('You do not have access to this event.');
     }
 }

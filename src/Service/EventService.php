@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\Event;
 use App\Repository\EventRepository;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class EventService
@@ -116,6 +117,26 @@ class EventService
         $this->eventRepository->save($event, true);
 
         return $this->serialize($event);
+    }
+
+    public function assertOwner(Event $event, string $ownerId): void
+    {
+        if ($event->getOwnerId() !== $ownerId) {
+            throw new AccessDeniedHttpException('You do not own this event.');
+        }
+    }
+
+    public function assertAccessible(Event $event, string $userId): void
+    {
+        if ($event->getOwnerId() === $userId) {
+            return;
+        }
+
+        if (in_array($userId, $event->getSharedWithUserIds(), true)) {
+            return;
+        }
+
+        throw new AccessDeniedHttpException('You do not have access to this event.');
     }
 
     /**

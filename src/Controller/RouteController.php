@@ -50,7 +50,7 @@ class RouteController extends AbstractController
     #[Route('/{id}', name: 'update', methods: ['PUT'])]
     public function update(Request $request, RouteEntity $entity): JsonResponse
     {
-        $this->assertOwner($entity);
+        $this->routeService->assertOwner($entity, $this->getOwnerId());
         $data = json_decode($request->getContent(), true) ?? [];
 
         try {
@@ -64,7 +64,7 @@ class RouteController extends AbstractController
     #[Route('/{id}', name: 'delete', methods: ['DELETE'])]
     public function delete(RouteEntity $entity): JsonResponse
     {
-        $this->assertOwner($entity);
+        $this->routeService->assertOwner($entity, $this->getOwnerId());
         $this->routeService->delete($entity);
         return $this->json(null, Response::HTTP_NO_CONTENT);
     }
@@ -74,12 +74,5 @@ class RouteController extends AbstractController
         /** @var JwtUser $user */
         $user = $this->getUser();
         return $user->getUserId();
-    }
-
-    private function assertOwner(RouteEntity $entity): void
-    {
-        if ($entity->getOwnerId() !== $this->getOwnerId()) {
-            throw $this->createAccessDeniedException('You do not own this route.');
-        }
     }
 }
