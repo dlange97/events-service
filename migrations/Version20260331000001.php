@@ -16,9 +16,15 @@ final class Version20260331000001 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql('ALTER TABLE event ADD instance_id VARCHAR(36) DEFAULT NULL');
-        $this->addSql('ALTER TABLE map_point ADD instance_id VARCHAR(36) DEFAULT NULL');
-        $this->addSql('ALTER TABLE route ADD instance_id VARCHAR(36) DEFAULT NULL');
+        if ($schema->hasTable('event') && !$schema->getTable('event')->hasColumn('instance_id')) {
+            $this->addSql('ALTER TABLE event ADD instance_id VARCHAR(36) DEFAULT NULL');
+        }
+        if ($schema->hasTable('map_point') && !$schema->getTable('map_point')->hasColumn('instance_id')) {
+            $this->addSql('ALTER TABLE map_point ADD instance_id VARCHAR(36) DEFAULT NULL');
+        }
+        if ($schema->hasTable('route') && !$schema->getTable('route')->hasColumn('instance_id')) {
+            $this->addSql('ALTER TABLE route ADD instance_id VARCHAR(36) DEFAULT NULL');
+        }
     }
 
     public function down(Schema $schema): void
