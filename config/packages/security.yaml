@@ -21,7 +21,8 @@ security:
 
   access_control:
     - { path: "^/events/health", roles: PUBLIC_ACCESS }
-    - { path: "^/events/docs(?:\\.json)?$", roles: PUBLIC_ACCESS }
+    - { path: "^/events/docs(?:\\.json)?$", roles: ROLE_ADMIN }
+    - { path: "^/events/admin/security-log", roles: ROLE_ADMIN }
     - {
         path: "^/events/routes",
         methods: [GET],
@@ -43,3 +44,8 @@ security:
         allow_if: "user and 'events.manage' in user.getPermissions()",
       }
     - { path: "^/events(?:$|/)", roles: ROLE_USER }
+
+when@prod:
+  security:
+    access_control:
+      - { path: ^/, requires_channel: https }

@@ -25,54 +25,41 @@ class Route
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    /** Name/title of the route */
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank(message: 'Route name is required.')]
     #[Assert\Length(max: 255, maxMessage: 'Route name cannot exceed 255 characters.')]
     private string $name = '';
 
-    /** Route description */
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
 
     /**
-     * GeoJSON LineString or MultiLineString representing the route path.
-     *
      * @var array<string, mixed>
      */
     #[ORM\Column(type: 'json')]
     #[Assert\NotNull(message: 'Route path is required.')]
     private array $geoJson = [];
 
-    /** Total route distance in meters (calculated from GeoJSON) */
     #[ORM\Column(type: 'float', nullable: true)]
     private ?float $distanceMeters = null;
 
-    /** Estimated duration in minutes */
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $durationMinutes = null;
 
-    /** Hex color used to render route on map */
     #[ORM\Column(type: 'string', length: 16, options: ['default' => '#6366f1'])]
     private string $color = '#6366f1';
 
     /**
-     * JSON array of waypoints: [["lat", "lon"], ...]
-     *
      * @var array<int, array<int, float|int|string>>
      */
     #[ORM\Column(type: 'json')]
     private array $waypoints = [];
 
-    /** UUID string from JWT – identifier of route owner */
     #[ORM\Column(type: 'string', length: 36)]
     private string $ownerId = '';
 
-    /** Optional: associated event ID */
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $eventId = null;
-
-    // ── Getters / Setters ──
 
     public function getId(): ?int
     {
