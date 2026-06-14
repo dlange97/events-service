@@ -19,8 +19,6 @@ class RouteRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find all routes for a given owner
-     *
      * @return Route[]
      */
     public function findAllByOwner(string $ownerId): array
@@ -34,8 +32,6 @@ class RouteRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find routes for a specific event
-     *
      * @return Route[]
      */
     public function findByEvent(int $eventId): array
@@ -49,8 +45,6 @@ class RouteRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find routes for owner filtered by event
-     *
      * @return Route[]
      */
     public function findByOwnerAndEvent(string $ownerId, int $eventId): array

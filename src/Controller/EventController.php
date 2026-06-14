@@ -95,8 +95,6 @@ class EventController extends AbstractController
         return $this->json($this->eventService->unshareWithUser($event, $userId));
     }
 
-    // ── Private helpers ───────────────────────────────────────
-
     private function getOwnerId(): string
     {
         /** @var JwtUser $user */

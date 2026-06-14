@@ -18,8 +18,6 @@ class RouteService
     }
 
     /**
-     * Find all routes for an owner
-     *
      * @return array<int, array<string, mixed>>
      */
     public function findAllByOwner(string $ownerId): array
@@ -31,8 +29,6 @@ class RouteService
     }
 
     /**
-     * Find routes for a specific event
-     *
      * @return array<int, array<string, mixed>>
      */
     public function findByEvent(string $ownerId, int $eventId): array
@@ -44,8 +40,6 @@ class RouteService
     }
 
     /**
-     * Create a new route from GeoJSON data
-     *
      * @param array<string, mixed> $data
      * @return array<string, mixed>
      * @throws \InvalidArgumentException on validation failure
@@ -64,8 +58,6 @@ class RouteService
     }
 
     /**
-     * Update existing route
-     *
      * @param array<string, mixed> $data
      * @return array<string, mixed>
      * @throws \InvalidArgumentException on validation failure
@@ -80,9 +72,6 @@ class RouteService
         return $this->serialize($route);
     }
 
-    /**
-     * Delete a route
-     */
     public function delete(Route $route): void
     {
         $this->routeRepository->remove($route, true);
@@ -96,8 +85,6 @@ class RouteService
     }
 
     /**
-     * Apply data to a route entity
-     *
      * @param array<string, mixed> $data
      */
     private function applyData(Route $route, array $data): void
@@ -136,8 +123,6 @@ class RouteService
     }
 
     /**
-     * Validate a route entity
-     *
      * @throws \InvalidArgumentException
      */
     private function validateOrFail(Route $route): void
@@ -153,8 +138,6 @@ class RouteService
     }
 
     /**
-     * Serialize route to array
-     *
      * @return array<string, mixed>
      */
     public function serialize(Route $route): array

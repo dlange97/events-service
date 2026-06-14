@@ -22,8 +22,6 @@ class EventRepository extends ServiceEntityRepository
     }
 
     /**
-     * Return all events belonging to the given owner, sorted by startAt ASC.
-     *
      * @return Event[]
      */
     public function findAllByOwner(string $ownerId): array
@@ -46,8 +44,6 @@ class EventRepository extends ServiceEntityRepository
     }
 
     /**
-     * Return upcoming events (startAt >= now) for the given owner, limit 20.
-     *
      * @return Event[]
      */
     public function findUpcoming(string $ownerId): array

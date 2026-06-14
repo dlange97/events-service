@@ -18,8 +18,6 @@ class EventService
     }
 
     /**
-     * Return all events for an owner, serialised as plain arrays.
-     *
      * @return array<int, array<string, mixed>>
      */
     public function findAllByOwner(string $ownerId): array
@@ -31,8 +29,6 @@ class EventService
     }
 
     /**
-     * Return upcoming events for an owner, serialised as plain arrays.
-     *
      * @return array<int, array<string, mixed>>
      */
     public function findUpcoming(string $ownerId): array
@@ -44,8 +40,6 @@ class EventService
     }
 
     /**
-     * Create a new event from raw payload data.
-     *
      * @param array<string, mixed> $data
      * @return array<string, mixed>
      * @throws \InvalidArgumentException on validation failure
@@ -64,8 +58,6 @@ class EventService
     }
 
     /**
-     * Update an existing event.
-     *
      * @param array<string, mixed> $data
      * @return array<string, mixed>
      * @throws \InvalidArgumentException on validation failure
@@ -80,9 +72,6 @@ class EventService
         return $this->serialize($event);
     }
 
-    /**
-     * Delete an event.
-     */
     public function delete(Event $event): void
     {
         $this->eventRepository->remove($event, true);
@@ -140,8 +129,6 @@ class EventService
     }
 
     /**
-     * Serialise an Event entity to an array safe for JSON output.
-     *
      * @return array<string, mixed>
      */
     public function serialize(Event $event): array
@@ -169,11 +156,7 @@ class EventService
         ];
     }
 
-    // ── Private helpers ───────────────────────────────────────
-
     /**
-     * Apply payload fields to an Event entity.
-     *
      * @param array<string, mixed> $data
      */
     private function applyData(Event $event, array $data): void
@@ -194,7 +177,6 @@ class EventService
             $event->setEndAt(!empty($data['endAt']) ? new \DateTimeImmutable((string) $data['endAt']) : null);
         }
 
-        // Location block: { display_name, lat, lon }
         if (array_key_exists('location', $data)) {
             $loc = $data['location'];
             if ($loc === null) {
@@ -210,8 +192,6 @@ class EventService
     }
 
     /**
-     * Run Symfony validation; throw InvalidArgumentException with JSON-friendly messages on failure.
-     *
      * @throws \InvalidArgumentException
      */
     private function validateOrFail(Event $event): void

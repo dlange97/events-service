@@ -47,15 +47,12 @@ class Event
     #[ORM\Column(type: 'float', nullable: true)]
     private ?float $locationLon = null;
 
-    /** UUID string from JWT – no foreign-key constraint (cross-service). */
     #[ORM\Column(type: 'string', length: 36)]
     private string $ownerId = '';
 
     /** @var list<string> */
     #[ORM\Column(type: 'json')]
     private array $sharedWithUserIds = [];
-
-    // ── Getters / Setters ─────────────────────────────────────
 
     public function getId(): ?int
     {
