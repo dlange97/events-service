@@ -65,7 +65,7 @@ final class RouteService
     public function update(Route $route, array $data): array
     {
         $this->applyData($route, $data);
-        $this->validateOrFail($route);
+        $this->validator->validateOrFail($route);
 
         $this->routeRepository->save($route, true);
 
