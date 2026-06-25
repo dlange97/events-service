@@ -5,16 +5,14 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\MapPoint;
-use MyDashboard\Shared\Security\JwtUser;
 use App\Service\MapPointService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/events/points', name: 'events_points_')]
-class MapPointController extends AbstractController
+final class MapPointController extends AbstractAppController
 {
     public function __construct(private readonly MapPointService $mapPointService)
     {
@@ -60,13 +58,5 @@ class MapPointController extends AbstractController
         $this->mapPointService->delete($point);
 
         return $this->json(null, Response::HTTP_NO_CONTENT);
-    }
-
-    private function getOwnerId(): string
-    {
-        /** @var JwtUser $user */
-        $user = $this->getUser();
-
-        return $user->getUserId();
     }
 }

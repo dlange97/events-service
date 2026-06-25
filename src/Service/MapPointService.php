@@ -6,14 +6,14 @@ namespace App\Service;
 
 use App\Entity\MapPoint;
 use App\Repository\MapPointRepository;
+use App\Validator\EntityValidator;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class MapPointService
+final class MapPointService
 {
     public function __construct(
         private readonly MapPointRepository $mapPointRepository,
-        private readonly ValidatorInterface $validator,
+        private readonly EntityValidator $validator,
     ) {
     }
 
@@ -38,7 +38,7 @@ class MapPointService
         $point->setOwnerId($ownerId);
 
         $this->applyData($point, $data);
-        $this->validateOrFail($point);
+        $this->validator->validateOrFail($point);
 
         $this->mapPointRepository->save($point, true);
 
@@ -52,7 +52,7 @@ class MapPointService
     public function update(MapPoint $point, array $data): array
     {
         $this->applyData($point, $data);
-        $this->validateOrFail($point);
+        $this->validator->validateOrFail($point);
 
         $this->mapPointRepository->save($point, true);
 
@@ -109,18 +109,4 @@ class MapPointService
         }
     }
 
-    private function validateOrFail(MapPoint $point): void
-    {
-        $errors = $this->validator->validate($point);
-        if (count($errors) === 0) {
-            return;
-        }
-
-        $messages = [];
-        foreach ($errors as $error) {
-            $messages[] = $error->getPropertyPath() . ': ' . $error->getMessage();
-        }
-
-        throw new \InvalidArgumentException(implode('; ', $messages));
-    }
 }

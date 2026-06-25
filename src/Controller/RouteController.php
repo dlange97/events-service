@@ -5,16 +5,14 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Route as RouteEntity;
-use MyDashboard\Shared\Security\JwtUser;
 use App\Service\RouteService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/events/routes', name: 'events_routes_')]
-class RouteController extends AbstractController
+final class RouteController extends AbstractAppController
 {
     public function __construct(private readonly RouteService $routeService)
     {
@@ -67,12 +65,5 @@ class RouteController extends AbstractController
         $this->routeService->assertOwner($entity, $this->getOwnerId());
         $this->routeService->delete($entity);
         return $this->json(null, Response::HTTP_NO_CONTENT);
-    }
-
-    private function getOwnerId(): string
-    {
-        /** @var JwtUser $user */
-        $user = $this->getUser();
-        return $user->getUserId();
     }
 }

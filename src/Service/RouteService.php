@@ -6,14 +6,14 @@ namespace App\Service;
 
 use App\Entity\Route;
 use App\Repository\RouteRepository;
+use App\Validator\EntityValidator;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class RouteService
+final class RouteService
 {
     public function __construct(
         private readonly RouteRepository $routeRepository,
-        private readonly ValidatorInterface $validator,
+        private readonly EntityValidator $validator,
     ) {
     }
 
@@ -50,7 +50,7 @@ class RouteService
         $route->setOwnerId($ownerId);
 
         $this->applyData($route, $data);
-        $this->validateOrFail($route);
+        $this->validator->validateOrFail($route);
 
         $this->routeRepository->save($route, true);
 
@@ -119,21 +119,6 @@ class RouteService
 
         if (isset($data['eventId'])) {
             $route->setEventId($data['eventId']);
-        }
-    }
-
-    /**
-     * @throws \InvalidArgumentException
-     */
-    private function validateOrFail(Route $route): void
-    {
-        $errors = $this->validator->validate($route);
-        if (count($errors) > 0) {
-            $messages = [];
-            foreach ($errors as $error) {
-                $messages[] = "{$error->getPropertyPath()}: {$error->getMessage()}";
-            }
-            throw new \InvalidArgumentException(implode('; ', $messages));
         }
     }
 

@@ -6,14 +6,14 @@ namespace App\Service;
 
 use App\Entity\Event;
 use App\Repository\EventRepository;
+use App\Validator\EntityValidator;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class EventService
+final class EventService
 {
     public function __construct(
         private readonly EventRepository $eventRepository,
-        private readonly ValidatorInterface $validator,
+        private readonly EntityValidator $validator,
     ) {
     }
 
@@ -50,7 +50,7 @@ class EventService
         $event->setOwnerId($ownerId);
 
         $this->applyData($event, $data);
-        $this->validateOrFail($event);
+        $this->validator->validateOrFail($event);
 
         $this->eventRepository->save($event, true);
 
@@ -65,7 +65,7 @@ class EventService
     public function update(Event $event, array $data): array
     {
         $this->applyData($event, $data);
-        $this->validateOrFail($event);
+        $this->validator->validateOrFail($event);
 
         $this->eventRepository->save($event, true);
 
@@ -191,21 +191,5 @@ class EventService
         }
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
-    private function validateOrFail(Event $event): void
-    {
-        $violations = $this->validator->validate($event);
-        if (count($violations) === 0) {
-            return;
-        }
-
-        $messages = [];
-        foreach ($violations as $v) {
-            $messages[] = $v->getMessage();
-        }
-
-        throw new \InvalidArgumentException(implode(' ', $messages));
-    }
 }
+

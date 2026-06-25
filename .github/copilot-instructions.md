@@ -132,3 +132,41 @@ public function complete(string $hash, Request $request): JsonResponse
 - Every `Service` must have a corresponding `tests/Service/*Test.php` unit test
 - Unit tests mock all dependencies; no database is required
 - Controllers do **not** need unit tests; cover them with integration/functional tests if needed
+
+## Validation Rules
+
+- **Never inline `validateOrFail` in a service.** Validation logic must live in `App\Validator\EntityValidator` (or a service-specific validator in `src/Validator/`).
+- Services must inject `EntityValidator` and call `$this->validator->validateOrFail($entity)` — do not copy-paste the violation-collection loop.
+- Do **not** inject `ValidatorInterface` directly into domain services; inject `EntityValidator` instead.
+
+```php
+// GOOD
+use App\Validator\EntityValidator;
+
+class FooService
+{
+    public function __construct(private readonly EntityValidator $validator) {}
+
+    public function create(array $data): array
+    {
+        $entity = ...; // build entity
+        $this->validator->validateOrFail($entity);
+        ...
+    }
+}
+```
+
+```php
+// BAD — duplicated inline validation
+private function validateOrFail(Foo $entity): void
+{
+    $errors = $this->validator->validate($entity);
+    if (count($errors) > 0) { ... }
+}
+```
+
+## Controller Base Class
+
+- All controllers in this service **must** extend `App\Controller\AbstractAppController`.
+- `AbstractAppController` provides `getOwnerId(): string`; do **not** copy this method into concrete controllers.
+- Do **not** call `$this->getUser()` directly in controller actions — use `$this->getOwnerId()` instead.
