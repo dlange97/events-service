@@ -191,4 +191,21 @@ final class EventService
         }
     }
 
+    /**
+     * @throws \InvalidArgumentException
+     */
+    private function validateOrFail(Event $event): void
+    {
+        $violations = $this->validator->validate($event);
+        if (count($violations) === 0) {
+            return;
+        }
+
+        $messages = [];
+        foreach ($violations as $v) {
+            $messages[] = $v->getMessage();
+        }
+
+        throw new \InvalidArgumentException(implode(' ', $messages));
+    }
 }

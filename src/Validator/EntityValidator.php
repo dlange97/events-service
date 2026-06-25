@@ -12,11 +12,6 @@ final class EntityValidator
     {
     }
 
-    /**
-     * Validates an entity and throws when there are constraint violations.
-     *
-     * @throws \InvalidArgumentException with all violation messages joined
-     */
     public function validateOrFail(object $entity): void
     {
         $violations = $this->validator->validate($entity);
