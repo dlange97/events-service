@@ -7,23 +7,24 @@ namespace App\Tests\Service;
 use App\Entity\MapPoint;
 use App\Repository\MapPointRepository;
 use App\Service\MapPointService;
+use App\Validator\EntityValidator;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Validator\ConstraintViolationList;
-use App\Validator\EntityValidator;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class MapPointServiceTest extends TestCase
 {
     private MapPointRepository&MockObject $repo;
-    private EntityValidator&MockObject $validator;
+    private ValidatorInterface&MockObject $validator;
     private MapPointService $service;
 
     protected function setUp(): void
     {
         $this->repo = $this->createMock(MapPointRepository::class);
-        $this->validator = $this->createMock(EntityValidator::class);
-        $this->service = new MapPointService($this->repo, $this->validator);
+        $this->validator = $this->createMock(ValidatorInterface::class);
+        $this->service = new MapPointService($this->repo, new EntityValidator($this->validator));
     }
 
     public function testFindAllByOwnerReturnsSerializedPoints(): void

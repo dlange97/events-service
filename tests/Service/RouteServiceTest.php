@@ -7,22 +7,23 @@ namespace App\Tests\Service;
 use App\Entity\Route;
 use App\Repository\RouteRepository;
 use App\Service\RouteService;
+use App\Validator\EntityValidator;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\ConstraintViolationList;
-use App\Validator\EntityValidator;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 final class RouteServiceTest extends TestCase
 {
     private RouteRepository&MockObject $repo;
-    private EntityValidator&MockObject $validator;
+    private ValidatorInterface&MockObject $validator;
     private RouteService $service;
 
     protected function setUp(): void
     {
         $this->repo = $this->createMock(RouteRepository::class);
-        $this->validator = $this->createMock(EntityValidator::class);
-        $this->service = new RouteService($this->repo, $this->validator);
+        $this->validator = $this->createMock(ValidatorInterface::class);
+        $this->service = new RouteService($this->repo, new EntityValidator($this->validator));
     }
 
     public function testCreateUsesProvidedColor(): void
