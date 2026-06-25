@@ -11,18 +11,18 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Validator\ConstraintViolationList;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use App\Validator\EntityValidator;
 
 class MapPointServiceTest extends TestCase
 {
     private MapPointRepository&MockObject $repo;
-    private ValidatorInterface&MockObject $validator;
+    private EntityValidator&MockObject $validator;
     private MapPointService $service;
 
     protected function setUp(): void
     {
         $this->repo = $this->createMock(MapPointRepository::class);
-        $this->validator = $this->createMock(ValidatorInterface::class);
+        $this->validator = $this->createMock(EntityValidator::class);
         $this->service = new MapPointService($this->repo, $this->validator);
     }
 

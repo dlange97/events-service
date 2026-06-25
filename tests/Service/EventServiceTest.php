@@ -7,25 +7,23 @@ namespace App\Tests\Service;
 use App\Entity\Event;
 use App\Repository\EventRepository;
 use App\Service\EventService;
+use App\Validator\EntityValidator;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\ConstraintViolationList;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class EventServiceTest extends TestCase
 {
     private EventRepository&MockObject $repo;
-    private ValidatorInterface&MockObject $validator;
+    private EntityValidator&MockObject $validator;
     private EventService $service;
 
     protected function setUp(): void
     {
         $this->repo      = $this->createMock(EventRepository::class);
-        $this->validator = $this->createMock(ValidatorInterface::class);
+        $this->validator = $this->createMock(EntityValidator::class);
         $this->service   = new EventService($this->repo, $this->validator);
     }
-
-    // ── findAllByOwner ────────────────────────────────────────
 
     public function testFindAllByOwnerReturnsSerialisedEvents(): void
     {

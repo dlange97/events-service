@@ -123,21 +123,6 @@ final class RouteService
     }
 
     /**
-     * @throws \InvalidArgumentException
-     */
-    private function validateOrFail(Route $route): void
-    {
-        $errors = $this->validator->validate($route);
-        if (count($errors) > 0) {
-            $messages = [];
-            foreach ($errors as $error) {
-                $messages[] = "{$error->getPropertyPath()}: {$error->getMessage()}";
-            }
-            throw new \InvalidArgumentException(implode('; ', $messages));
-        }
-    }
-
-    /**
      * @return array<string, mixed>
      */
     public function serialize(Route $route): array

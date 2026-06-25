@@ -10,18 +10,18 @@ use App\Service\RouteService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\ConstraintViolationList;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use App\Validator\EntityValidator;
 
 final class RouteServiceTest extends TestCase
 {
     private RouteRepository&MockObject $repo;
-    private ValidatorInterface&MockObject $validator;
+    private EntityValidator&MockObject $validator;
     private RouteService $service;
 
     protected function setUp(): void
     {
         $this->repo = $this->createMock(RouteRepository::class);
-        $this->validator = $this->createMock(ValidatorInterface::class);
+        $this->validator = $this->createMock(EntityValidator::class);
         $this->service = new RouteService($this->repo, $this->validator);
     }
 
