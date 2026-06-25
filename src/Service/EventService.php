@@ -192,4 +192,3 @@ final class EventService
     }
 
 }
-

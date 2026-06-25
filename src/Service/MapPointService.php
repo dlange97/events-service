@@ -108,5 +108,4 @@ final class MapPointService
             $point->setLon((float) $data['lon']);
         }
     }
-
 }
