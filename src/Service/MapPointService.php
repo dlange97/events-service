@@ -6,14 +6,17 @@ namespace App\Service;
 
 use App\Entity\MapPoint;
 use App\Repository\MapPointRepository;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use App\Service\Access\ResourceAccessService;
+use App\Service\Serialization\MapPointViewSerializer;
+use App\Validator\EntityValidator;
 
-class MapPointService
+final class MapPointService
 {
     public function __construct(
         private readonly MapPointRepository $mapPointRepository,
-        private readonly ValidatorInterface $validator,
+        private readonly EntityValidator $validator,
+        private readonly MapPointViewSerializer $serializer,
+        private readonly ResourceAccessService $resourceAccessService,
     ) {
     }
 
@@ -23,7 +26,7 @@ class MapPointService
     public function findAllByOwner(string $ownerId): array
     {
         return array_map(
-            fn(MapPoint $point) => $this->serialize($point),
+            fn(MapPoint $point) => $this->serializer->serialize($point),
             $this->mapPointRepository->findAllByOwner($ownerId),
         );
     }
@@ -38,11 +41,11 @@ class MapPointService
         $point->setOwnerId($ownerId);
 
         $this->applyData($point, $data);
-        $this->validateOrFail($point);
+        $this->validator->validateOrFail($point);
 
         $this->mapPointRepository->save($point, true);
 
-        return $this->serialize($point);
+        return $this->serializer->serialize($point);
     }
 
     /**
@@ -52,11 +55,11 @@ class MapPointService
     public function update(MapPoint $point, array $data): array
     {
         $this->applyData($point, $data);
-        $this->validateOrFail($point);
+        $this->validator->validateOrFail($point);
 
         $this->mapPointRepository->save($point, true);
 
-        return $this->serialize($point);
+        return $this->serializer->serialize($point);
     }
 
     public function delete(MapPoint $point): void
@@ -66,9 +69,7 @@ class MapPointService
 
     public function assertOwner(MapPoint $point, string $ownerId): void
     {
-        if ($point->getOwnerId() !== $ownerId) {
-            throw new AccessDeniedHttpException('You do not own this map point.');
-        }
+        $this->resourceAccessService->assertOwner($point->getOwnerId(), $ownerId, 'You do not own this map point.');
     }
 
     /**
@@ -76,15 +77,7 @@ class MapPointService
      */
     public function serialize(MapPoint $point): array
     {
-        return [
-            'id' => $point->getId(),
-            'name' => $point->getName(),
-            'description' => $point->getDescription(),
-            'lat' => $point->getLat(),
-            'lon' => $point->getLon(),
-            'createdAt' => $point->getCreatedAt()?->format(\DateTimeInterface::ATOM),
-            'updatedAt' => $point->getUpdatedAt()?->format(\DateTimeInterface::ATOM),
-        ];
+        return $this->serializer->serialize($point);
     }
 
     /**
@@ -107,20 +100,5 @@ class MapPointService
         if (isset($data['lon'])) {
             $point->setLon((float) $data['lon']);
         }
-    }
-
-    private function validateOrFail(MapPoint $point): void
-    {
-        $errors = $this->validator->validate($point);
-        if (count($errors) === 0) {
-            return;
-        }
-
-        $messages = [];
-        foreach ($errors as $error) {
-            $messages[] = $error->getPropertyPath() . ': ' . $error->getMessage();
-        }
-
-        throw new \InvalidArgumentException(implode('; ', $messages));
     }
 }

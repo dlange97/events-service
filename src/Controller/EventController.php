@@ -5,16 +5,14 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Event;
-use MyDashboard\Shared\Security\JwtUser;
 use App\Service\EventService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/events', name: 'events_')]
-class EventController extends AbstractController
+final class EventController extends AbstractAppController
 {
     public function __construct(
         private readonly EventService $eventService,
@@ -93,12 +91,5 @@ class EventController extends AbstractController
         $this->eventService->assertOwner($event, $this->getOwnerId());
 
         return $this->json($this->eventService->unshareWithUser($event, $userId));
-    }
-
-    private function getOwnerId(): string
-    {
-        /** @var JwtUser $user */
-        $user = $this->getUser();
-        return $user->getUserId();
     }
 }
