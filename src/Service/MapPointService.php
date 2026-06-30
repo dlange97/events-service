@@ -6,14 +6,17 @@ namespace App\Service;
 
 use App\Entity\MapPoint;
 use App\Repository\MapPointRepository;
+use App\Service\Access\ResourceAccessService;
+use App\Service\Serialization\MapPointViewSerializer;
 use App\Validator\EntityValidator;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 final class MapPointService
 {
     public function __construct(
         private readonly MapPointRepository $mapPointRepository,
         private readonly EntityValidator $validator,
+        private readonly MapPointViewSerializer $serializer,
+        private readonly ResourceAccessService $resourceAccessService,
     ) {
     }
 
@@ -23,7 +26,7 @@ final class MapPointService
     public function findAllByOwner(string $ownerId): array
     {
         return array_map(
-            fn(MapPoint $point) => $this->serialize($point),
+            fn(MapPoint $point) => $this->serializer->serialize($point),
             $this->mapPointRepository->findAllByOwner($ownerId),
         );
     }
@@ -42,7 +45,7 @@ final class MapPointService
 
         $this->mapPointRepository->save($point, true);
 
-        return $this->serialize($point);
+        return $this->serializer->serialize($point);
     }
 
     /**
@@ -56,7 +59,7 @@ final class MapPointService
 
         $this->mapPointRepository->save($point, true);
 
-        return $this->serialize($point);
+        return $this->serializer->serialize($point);
     }
 
     public function delete(MapPoint $point): void
@@ -66,9 +69,7 @@ final class MapPointService
 
     public function assertOwner(MapPoint $point, string $ownerId): void
     {
-        if ($point->getOwnerId() !== $ownerId) {
-            throw new AccessDeniedHttpException('You do not own this map point.');
-        }
+        $this->resourceAccessService->assertOwner($point->getOwnerId(), $ownerId, 'You do not own this map point.');
     }
 
     /**
@@ -76,15 +77,7 @@ final class MapPointService
      */
     public function serialize(MapPoint $point): array
     {
-        return [
-            'id' => $point->getId(),
-            'name' => $point->getName(),
-            'description' => $point->getDescription(),
-            'lat' => $point->getLat(),
-            'lon' => $point->getLon(),
-            'createdAt' => $point->getCreatedAt()?->format(\DateTimeInterface::ATOM),
-            'updatedAt' => $point->getUpdatedAt()?->format(\DateTimeInterface::ATOM),
-        ];
+        return $this->serializer->serialize($point);
     }
 
     /**

@@ -6,7 +6,11 @@ namespace App\Tests\Service;
 
 use App\Entity\Event;
 use App\Repository\EventRepository;
+use App\Service\Access\ResourceAccessService;
 use App\Service\EventService;
+use App\Service\Input\DateTimeInputParser;
+use App\Service\Input\EventLocationInputNormalizer;
+use App\Service\Serialization\EventViewSerializer;
 use App\Validator\EntityValidator;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -23,7 +27,14 @@ class EventServiceTest extends TestCase
     {
         $this->repo      = $this->createMock(EventRepository::class);
         $this->validator = $this->createMock(ValidatorInterface::class);
-        $this->service   = new EventService($this->repo, new EntityValidator($this->validator));
+        $this->service   = new EventService(
+            $this->repo,
+            new EntityValidator($this->validator),
+            new EventViewSerializer(),
+            new DateTimeInputParser(),
+            new EventLocationInputNormalizer(),
+            new ResourceAccessService(),
+        );
     }
 
     public function testFindAllByOwnerReturnsSerialisedEvents(): void
