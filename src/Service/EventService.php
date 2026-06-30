@@ -22,6 +22,7 @@ final class EventService
         private readonly DateTimeInputParser $dateTimeParser,
         private readonly EventLocationInputNormalizer $locationInputNormalizer,
         private readonly ResourceAccessService $resourceAccessService,
+        private readonly NotificationGateway $notificationGateway,
     ) {
     }
 
@@ -102,6 +103,12 @@ final class EventService
 
         $event->addSharedUserId($normalizedUserId);
         $this->eventRepository->save($event, true);
+        $this->notificationGateway->notifyResourceShared(
+            'event',
+            $event->getTitle(),
+            $normalizedUserId,
+            $event->getOwnerId(),
+        );
 
         return $this->serializer->serialize($event);
     }

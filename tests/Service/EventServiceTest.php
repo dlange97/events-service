@@ -10,6 +10,7 @@ use App\Service\Access\ResourceAccessService;
 use App\Service\EventService;
 use App\Service\Input\DateTimeInputParser;
 use App\Service\Input\EventLocationInputNormalizer;
+use App\Service\NotificationGateway;
 use App\Service\Serialization\EventViewSerializer;
 use App\Validator\EntityValidator;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -34,6 +35,7 @@ class EventServiceTest extends TestCase
             new DateTimeInputParser(),
             new EventLocationInputNormalizer(),
             new ResourceAccessService(),
+            $this->createMock(NotificationGateway::class),
         );
     }
 
